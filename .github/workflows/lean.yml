@@ -1,0 +1,31 @@
+name: Lean build and axiom audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lean:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      LEAN_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: leanprover/lean-action@ba3fdfe5c4476c925da13bf11a005ddb47e47aee # v1
+        with:
+          auto-config: "false"
+          build: "true"
+          leanchecker: "true"
+          test: "false"
+          lint: "false"
+          use-mathlib-cache: "true"
+      - name: Check examples
+        run: lake env lean Examples.lean
+      - name: Audit transitive axioms
+        run: lake env lean Verification.lean

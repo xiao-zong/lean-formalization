@@ -1,0 +1,8 @@
+.lake/
+.DS_Store
+*.olean
+*.ilean
+*.olean.*
+*.log
+.env
+.env.*
